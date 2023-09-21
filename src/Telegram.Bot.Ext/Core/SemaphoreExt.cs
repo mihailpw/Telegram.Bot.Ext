@@ -2,9 +2,13 @@ namespace Telegram.Bot.Ext.Core;
 
 internal static class SemaphoreExt
 {
-    private class Disposable(Action disposeAction) : IDisposable
+    private class Disposable : IDisposable
     {
-        public void Dispose() => disposeAction();
+        private readonly Action _disposeAction;
+
+        public Disposable(Action disposeAction) => _disposeAction = disposeAction;
+
+        public void Dispose() => _disposeAction();
     }
     
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim target)
