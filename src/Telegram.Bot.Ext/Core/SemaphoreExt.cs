@@ -11,6 +11,12 @@ internal static class SemaphoreExt
         public void Dispose() => _disposeAction();
     }
     
+    public static IDisposable Lock(this SemaphoreSlim target)
+    {
+        target.Wait();
+        return new Disposable(() => target.Release());
+    }
+    
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim target)
     {
         await target.WaitAsync();

@@ -22,4 +22,6 @@
       <ProjectReference Include="..\Telegram.Bot.Ext\Telegram.Bot.Ext.csproj" />
     </ItemGroup>
 
+
+
 </Project>
