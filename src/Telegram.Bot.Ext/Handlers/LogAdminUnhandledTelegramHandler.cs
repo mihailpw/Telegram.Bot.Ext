@@ -1,4 +1,5 @@
 using Telegram.Bot.Ext.Features.Users;
+using Telegram.Bot.Ext.Features.Users.Models;
 using Telegram.Bot.Ext.Handlers.Base;
 using Telegram.Bot.Ext.Utils;
 using Telegram.Bot.Types;
@@ -16,8 +17,9 @@ public class LogAdminUnhandledTelegramHandler : TelegramHandlerBase
 
     protected override async Task<bool> HandleAsync(Update request, IHandleContext ctx, CancellationToken token)
     {
-        var info = TryGetInfo(request) ?? $"Unknown update '{request.Type}' received";
-        await _usersProvider.ForAllAdminsAsync(id => ctx.Bot.SendTextMessageAsync(id, info, cancellationToken: token));
+        await ctx.Bot.SendTextMessageAsync(_usersProvider, Role.Administrator,
+            TryGetInfo(request) ?? $"Unknown update '{request.Type}' received",
+            cancellationToken: token);
         return false;
     }
 

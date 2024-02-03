@@ -1,4 +1,3 @@
-using System.IO;
 using Telegram.Bot.Args;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Ext.Features.Users;

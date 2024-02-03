@@ -1,4 +1,5 @@
 using Telegram.Bot.Ext.Features.Users;
+using Telegram.Bot.Ext.Features.Users.Models;
 using Telegram.Bot.Ext.Handlers.Base;
 using Telegram.Bot.Ext.Utils;
 using Telegram.Bot.Types;
@@ -19,9 +20,9 @@ public class MyChatChangedNotifyAdminTelegramHandler : TelegramHandlerBase
         if (request.MyChatMember is not { NewChatMember: not null, OldChatMember: not null } myChatMember)
             return false;
 
-        await _usersProvider.ForAllAdminsAsync(id => ctx.Bot.SendTextMessageAsync(id,
+        await ctx.Bot.SendTextMessageAsync(_usersProvider, Role.Administrator,
             $"User update: {myChatMember.From.ToNameString()} (current: {myChatMember.NewChatMember.Status}; previous: {myChatMember.OldChatMember.Status})",
-            cancellationToken: token));
+            cancellationToken: token);
         return true;
     }
 }

@@ -3,7 +3,7 @@ using System.Text;
 namespace Telegram.Bot.Ext.Utils;
 
 // https://core.telegram.org/bots/api#markdownv2-style
-public class TelegramMarkdownV2
+public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
 {
     private static readonly List<char> EscapeSymbols
         = new() { '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!' };
@@ -15,8 +15,6 @@ public class TelegramMarkdownV2
     {
         _trimNewLines = trimNewLines;
     }
-
-    public static implicit operator string(TelegramMarkdownV2 builder) => builder.Build();
 
     public TelegramMarkdownV2 With(TelegramMarkdownV2 inner)
         => Do(sb => sb.Append(inner._sb));
@@ -43,8 +41,6 @@ public class TelegramMarkdownV2
         => Wrap("`", build);
     public TelegramMarkdownV2 WithCodeBlock(string? lang, Action<TelegramMarkdownV2> build)
         => Wrap($"```{Escape(lang)}", "```", build, true);
-
-    public override string ToString() => Build();
 
     public string Build()
     {
