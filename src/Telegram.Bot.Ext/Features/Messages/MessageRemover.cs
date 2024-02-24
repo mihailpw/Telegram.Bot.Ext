@@ -33,6 +33,16 @@ public class MessageRemover : IMessageRemover
         }
     }
 
+    public bool CancelMessageRemoval(ChatId chatId, int messageId, string groupKey = "")
+    {
+        ArgumentNullException.ThrowIfNull(groupKey);
+
+        using (_lock.Lock())
+        {
+            return _scheduledToRemove.Remove(new ChatMessageId(chatId, messageId, groupKey));
+        }
+    }
+
     public void ScheduleForRemoval(ChatId chatId, int messageId, TimeSpan deleteIn, string groupKey = "")
     {
         ArgumentNullException.ThrowIfNull(groupKey);
