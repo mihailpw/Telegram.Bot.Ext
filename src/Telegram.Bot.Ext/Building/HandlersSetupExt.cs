@@ -3,7 +3,7 @@ using Telegram.Bot.Ext.Building.Internal;
 
 namespace Telegram.Bot.Ext.Building;
 
-public static class HandlersSetupExt
+public static partial class HandlersSetupExt
 {
     public static IHandlersSetup Use(this IHandlersSetup setup, Type type, params object[] parameters)
     {

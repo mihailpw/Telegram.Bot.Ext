@@ -1,7 +1,7 @@
 using Telegram.Bot.Ext.Utils;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Ext.Features.Forms.FormSimple;
+namespace Telegram.Bot.Ext.Features.Forms.Base;
 
 public class CancelableFormDecorator : IForm
 {

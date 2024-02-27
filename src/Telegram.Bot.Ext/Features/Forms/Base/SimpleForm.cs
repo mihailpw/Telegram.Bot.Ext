@@ -1,6 +1,6 @@
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Ext.Features.Forms.FormSimple;
+namespace Telegram.Bot.Ext.Features.Forms.Base;
 
 public abstract class SimpleFormBase : IForm
 {

@@ -1,4 +1,4 @@
-using Telegram.Bot.Ext.Features.Forms.FormStepped;
+using Telegram.Bot.Ext.Features.Forms.Base.FormStepped;
 using Telegram.Bot.Ext.Features.Forms.Infra;
 using Telegram.Bot.Ext.States;
 using Telegram.Bot.Types;

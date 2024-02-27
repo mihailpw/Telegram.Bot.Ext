@@ -1,4 +1,4 @@
-namespace Telegram.Bot.Ext.Features.Forms.FormStepped;
+namespace Telegram.Bot.Ext.Features.Forms.Base.FormStepped;
 
 public static class SteppedFormContextExt
 {

@@ -1,6 +1,6 @@
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Ext.Features.Forms.FormStepped.Callbacks;
+namespace Telegram.Bot.Ext.Features.Forms.Base.FormStepped.Callbacks;
 
 public interface IFormCallbacks
 {

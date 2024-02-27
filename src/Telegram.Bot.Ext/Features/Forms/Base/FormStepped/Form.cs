@@ -1,8 +1,8 @@
-using Telegram.Bot.Ext.Features.Forms.FormStepped.Callbacks;
+using Telegram.Bot.Ext.Features.Forms.Base.FormStepped.Callbacks;
 using Telegram.Bot.Ext.Features.Forms.Steps;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Ext.Features.Forms.FormStepped;
+namespace Telegram.Bot.Ext.Features.Forms.Base.FormStepped;
 
 public sealed class Form : IForm
 {
