@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{EAEDA677-114B-4AE2-84D7-10E936C0B291}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{BBC8DD70-E288-4394-B2EB-D5074334D750}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBC8DD70-E288-4394-B2EB-D5074334D750}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBC8DD70-E288-4394-B2EB-D5074334D750}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAEDA677-114B-4AE2-84D7-10E936C0B291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAEDA677-114B-4AE2-84D7-10E936C0B291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAEDA677-114B-4AE2-84D7-10E936C0B291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAEDA677-114B-4AE2-84D7-10E936C0B291}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

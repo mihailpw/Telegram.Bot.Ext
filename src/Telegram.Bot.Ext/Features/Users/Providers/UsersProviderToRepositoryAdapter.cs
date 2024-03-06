@@ -58,3 +58,42 @@ public class UsersProviderToRepositoryAdapter<TUser> : IUsersProvider where TUse
         return users.Select(u => u.Id).ToList();
     }
 }
+
+public class UsersProviderToRepositoryAdapter2<TUser> : IUsersProvider where TUser : IUser
+{
+    private readonly IUserRepository<TUser> _userRepository;
+
+    public UsersProviderToRepositoryAdapter2(IUserRepository<TUser> userRepository)
+    {
+        _userRepository = userRepository;
+    }
+
+    public async Task<bool> CheckIfAsync(long id, Role role)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        return user?.Role == role;
+    }
+
+    public async Task<bool> CheckIfAsync(long id, Role[] oneOfRoles)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        return user is not null && oneOfRoles.Contains(user.Role);
+    }
+
+    public async Task<Role?> GetRoleAsync(long id)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        return user?.Role;
+    }
+
+    public IAsyncEnumerable<long> GetAllAwait(Role role)
+    {
+        return _userRepository.GetAllByRoleAwait(role).Select(u => u.Id);
+    }
+
+    public async Task<IReadOnlyCollection<long>> GetAllAsync(Role role)
+    {
+        var users = await _userRepository.GetAllByRoleAsync(role);
+        return users.Select(u => u.Id).ToList();
+    }
+}
