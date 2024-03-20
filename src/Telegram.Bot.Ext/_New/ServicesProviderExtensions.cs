@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Telegram.Bot.Ext.Building;
+﻿namespace Telegram.Bot.Ext.Building;
 
 public static class ServicesProviderExtensions
 {
