@@ -10,7 +10,7 @@ using Telegram.Bot.Ext.SourceGenerators.Utils;
 namespace Telegram.Bot.Ext.SourceGenerators;
 
 [Generator]
-public class TelegramBotExtensionsSourceGenerator : ISourceGenerator
+public class TelegramBotExtensionsUsersProviderSourceGenerator : ISourceGenerator
 {
     private const string TelegramBotAssemblyName = "Telegram.Bot";
     private const string ClassName = "TelegramBotClientExt";
