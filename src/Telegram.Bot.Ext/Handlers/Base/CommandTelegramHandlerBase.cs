@@ -6,13 +6,14 @@ namespace Telegram.Bot.Ext.Handlers.Base;
 public abstract class CommandTelegramHandlerBase : TelegramHandlerBase
 {
     private readonly string _command;
-    private readonly bool _continueIfNotSuitable;
 
-    protected CommandTelegramHandlerBase(string command, bool continueIfNotSuitable = false)
+    protected CommandTelegramHandlerBase(string command)
     {
-        _continueIfNotSuitable = continueIfNotSuitable;
         _command = StringUtils.PrepareCommand(command);
     }
+
+    protected bool ContinueIfNotSuitable { get; set; }
+    protected bool AutoRemoveCommandMessage { get; set; }
 
     protected sealed override async Task<bool> HandleAsync(Update request, IHandleContext ctx, CancellationToken token)
     {
@@ -22,8 +23,11 @@ public abstract class CommandTelegramHandlerBase : TelegramHandlerBase
         if (!StringUtils.IsCommand(text) || _command != StringUtils.PrepareCommand(text))
             return false;
 
+        if (AutoRemoveCommandMessage)
+            await ctx.Bot.DeleteMessageAsync(ctx.ChatId, message.MessageId, token);
+
         if (!await CheckIfSuitableAsync(message, ctx, token))
-            return !_continueIfNotSuitable;
+            return !ContinueIfNotSuitable;
 
         await HandleCommandAsync(message, ctx, token);
 

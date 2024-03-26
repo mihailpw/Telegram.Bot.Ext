@@ -50,18 +50,17 @@ public class MessageRemover : IMessageRemover
         using (_lock.Lock())
         {
             var chatMessageId = new ChatMessageId(chatId, messageId, groupKey);
-            if (_scheduledToRemove.ContainsKey(chatMessageId))
+            if (_scheduledToRemove.TryGetValue(chatMessageId, out var value))
             {
                 _logger.LogInformation("Rescheduling message removal (chatId={ChatId}, messageId={MessageId}",
                     chatId, messageId);
-                var timer = _scheduledToRemove[chatMessageId];
-                timer.Dispose();
+                value.Dispose();
                 _scheduledToRemove.Remove(chatMessageId);
             }
 
             if (deleteIn <= TimeSpan.FromSeconds(1))
             {
-                RemoveMessage(new ChatMessageId(chatId, messageId, groupKey));
+                RemoveMessage(new ChatMessageId(chatId, messageId, groupKey), force: true);
                 return;
             }
 
@@ -82,13 +81,13 @@ public class MessageRemover : IMessageRemover
                 RemoveMessage(key);
     }
 
-    private async void RemoveMessage(ChatMessageId chatMessageId)
+    private async void RemoveMessage(ChatMessageId chatMessageId, bool force = false)
     {
         try
         {
             using (await _lock.LockAsync())
             {
-                if (!_scheduledToRemove.ContainsKey(chatMessageId))
+                if (!force && !_scheduledToRemove.ContainsKey(chatMessageId))
                     return;
 
                 await _bot.DeleteMessageAsync(chatMessageId.ChatId, chatMessageId.MessageId);

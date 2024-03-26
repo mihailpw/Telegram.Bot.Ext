@@ -125,10 +125,13 @@ public static class TelegramMarkdownV2Ext
         return target;
     }
 
-    public static TelegramMarkdownV2 If(this TelegramMarkdownV2 target, bool condition, Action<TelegramMarkdownV2> build)
+    public static TelegramMarkdownV2 If(this TelegramMarkdownV2 target, bool condition,
+        Action<TelegramMarkdownV2> buildIf, Action<TelegramMarkdownV2>? buildElse = default)
     {
         if (condition)
-            build(target);
+            buildIf(target);
+        else
+            buildElse?.Invoke(target);
         return target;
     }
 
