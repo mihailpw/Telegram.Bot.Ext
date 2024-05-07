@@ -7,7 +7,7 @@ using Telegram.Bot.Ext.Features.Users.Models;
 using Telegram.Bot.Ext.Features.Users.Providers;
 using Telegram.Bot.Ext.Features.Users.Repositories;
 
-namespace Telegram.Bot.Ext.Building;
+namespace Telegram.Bot.Ext._New;
 
 public static class ServicesCollectionExtensions
 {

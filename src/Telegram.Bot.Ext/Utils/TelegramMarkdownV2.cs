@@ -19,8 +19,8 @@ public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
     public TelegramMarkdownV2 With(TelegramMarkdownV2 inner)
         => Do(sb => sb.Append(inner._sb));
 
-    public TelegramMarkdownV2 WithText(string text)
-        => Do(sb => sb.Append(Escape(text)));
+    public TelegramMarkdownV2 WithText(string text, bool escape = true)
+        => Do(sb => sb.Append(Escape(text, escape)));
     public TelegramMarkdownV2 WithNewLine(bool forceAdd = false)
         => Do(sb => sb.AppendLine(), forceAdd || !EndsWith(Environment.NewLine));
     public TelegramMarkdownV2 WithBold(Action<TelegramMarkdownV2> build)
@@ -33,10 +33,10 @@ public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
         => Wrap("~", build);
     public TelegramMarkdownV2 WithSpoiler(Action<TelegramMarkdownV2> build)
         => Wrap("||", build);
-    public TelegramMarkdownV2 WithLink(string title, string url)
-        => Do(sb => sb.Append('[').Append(Escape(title)).Append("](").Append(Escape(url)).Append(')'));
-    public TelegramMarkdownV2 WithUserMention(string title, long userId)
-        => Do(sb => sb.Append('[').Append(Escape(title)).Append("](tg://user?id=").Append(userId).Append(')'));
+    public TelegramMarkdownV2 WithLink(string title, string url, bool escapeTitle = true)
+        => Do(sb => sb.Append('[').Append(Escape(title, escapeTitle)).Append("](").Append(Escape(url)).Append(')'));
+    public TelegramMarkdownV2 WithUserMention(string title, long userId, bool escapeTitle = true)
+        => Do(sb => sb.Append('[').Append(Escape(title, escapeTitle)).Append("](tg://user?id=").Append(userId).Append(')'));
     public TelegramMarkdownV2 WithInlineCode(Action<TelegramMarkdownV2> build)
         => Wrap("`", build);
     public TelegramMarkdownV2 WithCodeBlock(string? lang, Action<TelegramMarkdownV2> build)
@@ -85,17 +85,16 @@ public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
         return true;
     }
 
-    private static StringBuilder Escape(string? input)
+    private static StringBuilder Escape(string? input, bool escape = true)
     {
         var sb = new StringBuilder(input ?? "");
-        for (var i = 0; i < sb.Length; i++)
-        {
-            if (EscapeSymbols.Contains(sb[i]))
-            {
-                sb.Insert(i, '\\');
-                i++;
-            }
-        }
+        if (escape)
+            for (var i = 0; i < sb.Length; i++)
+                if (EscapeSymbols.Contains(sb[i]))
+                {
+                    sb.Insert(i, '\\');
+                    i++;
+                }
 
         return sb;
     }

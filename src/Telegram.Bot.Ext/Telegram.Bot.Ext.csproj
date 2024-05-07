@@ -17,5 +17,4 @@
         <ProjectReference Include="..\Telegram.Bot.Ext.SourceGenerators\Telegram.Bot.Ext.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
-
 </Project>
