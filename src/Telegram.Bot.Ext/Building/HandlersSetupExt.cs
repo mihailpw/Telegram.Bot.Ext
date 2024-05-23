@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Ext.Building.Internal;
 
@@ -26,5 +27,17 @@ public static partial class HandlersSetupExt
         var builder = new HandlersExecutorBuilder();
         setupAction(builder);
         return setup.Use(sp => new CompositeTelegramHandler(builder.Build(sp)));
+    }
+
+    public static IHandlersSetup UseAutoRegistered(this IHandlersSetup setup, Assembly assemblyToScan)
+    {
+        foreach (var type in assemblyToScan.GetTypes())
+        {
+            if (type.GetCustomAttribute<AutoRegisteredTelegramCommandAttribute>()
+                is { Disabled: false } attr)
+                setup.Use(type, attr.Parameters);
+        }
+
+        return setup;
     }
 }
