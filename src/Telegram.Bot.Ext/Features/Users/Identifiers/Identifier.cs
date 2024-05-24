@@ -8,27 +8,20 @@ public abstract class Identifier
 {
     public static Identifier Parse(string input)
     {
-        if (TryParse(input, out var identifier))
+        if (TryParse(input) is { } identifier)
             return identifier;
-        throw new ArgumentOutOfRangeException(nameof(input), input, "Value should be number of Role");
+        throw new ArgumentOutOfRangeException(nameof(input), input, "Value should be number or Role");
     }
 
-    public static bool TryParse(string input, out Identifier output)
+    public static Identifier? TryParse(string input)
     {
         if (Enum.TryParse<Role>(input, out var role))
-        {
-            output = new RoleIdentifier(role);
-            return true;
-        }
+            return new RoleIdentifier(role);
 
         if (long.TryParse(input, out var chatId))
-        {
-            output = new ChatIdIdentifier(chatId);
-            return true;
-        }
+            return new ChatIdIdentifier(chatId);
 
-        output = default!;
-        return false;
+        return null;
     }
 
     public abstract IAsyncEnumerable<long> PrepareChatIdsAwait(IUsersProvider usersProvider);
