@@ -1,3 +1,5 @@
+using Telegram.Bot.Types;
+
 namespace Telegram.Bot.Ext.Features.Users.Identifiers;
 
 public static class IdentifierExtensions
