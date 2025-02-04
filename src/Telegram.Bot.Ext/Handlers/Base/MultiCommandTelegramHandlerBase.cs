@@ -29,6 +29,9 @@ public abstract class MultiCommandTelegramHandlerBase : TelegramHandlerBase
         if (!_handlers.TryGetValue(preparedCommand, out var handler))
             return false;
 
+        if (!await CheckSuitableGlobalAsync(message, ctx, token))
+            return !_continueIfNotSuitable;
+
         if (_gates.TryGetValue(preparedCommand, out var gate))
             if (!await gate(message, ctx, token))
                 return !_continueIfNotSuitable;
@@ -36,6 +39,11 @@ public abstract class MultiCommandTelegramHandlerBase : TelegramHandlerBase
         await handler(message, ctx, token);
 
         return true;
+    }
+
+    protected virtual Task<bool> CheckSuitableGlobalAsync(Message message, IHandleContext ctx, CancellationToken token)
+    {
+        return Task.FromResult(true);
     }
 
     protected void RegisterCommand(

@@ -18,7 +18,7 @@ public abstract class CallbackTelegramHandlerBase : TelegramHandlerBase
         {
             foreach (var handleVar in _handlers)
             {
-                if (handleVar.Key.IsRelated(ctx.State, callbackData))
+                if (handleVar.Key.IsStaticRelated(callbackData) || handleVar.Key.IsRelated(ctx.State, callbackData))
                 {
                     await handleVar.Value(callbackQuery, ctx, token);
                     return true;

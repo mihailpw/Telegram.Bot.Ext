@@ -9,11 +9,11 @@ public class Var
     public static implicit operator string(Var var)
         => var.Id;
 
-    public virtual bool IsRelated(string callbackDataRaw)
+    public virtual bool IsStaticRelated(string callbackDataRaw)
         => Id == callbackDataRaw;
 
     public virtual bool IsRelated(IState state, string callbackDataRaw)
-        => IsRelated(callbackDataRaw) && state.Has<object>(Id);
+        => Id == callbackDataRaw && state.Has<object>(Id);
 
     protected static string GenerateId() => Guid.NewGuid().ToString("N");
 }
@@ -49,8 +49,8 @@ public sealed class Var<T> : Var
     public T? GetValue(IState state, string callbackDataRaw)
         => state.Group(Id).Get<T>(callbackDataRaw);
 
-    public override bool IsRelated(string callbackDataRaw)
-        => base.IsRelated(callbackDataRaw) || _staticValues.ContainsKey(callbackDataRaw);
+    public override bool IsStaticRelated(string callbackDataRaw)
+        => base.IsStaticRelated(callbackDataRaw) || _staticValues.ContainsKey(callbackDataRaw);
 
     public override bool IsRelated(IState state, string callbackDataRaw)
         => base.IsRelated(state, callbackDataRaw) || state.Group(Id).Has<T>(callbackDataRaw);

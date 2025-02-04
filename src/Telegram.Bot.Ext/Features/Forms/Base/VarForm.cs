@@ -25,7 +25,7 @@ public abstract class VarForm : IForm
         bool finished;
         if (request is { CallbackQuery.Data: { } callbackQueryRaw }
             && _handlers.Keys.FirstOrDefault(v =>
-                v.IsRelated(callbackQueryRaw) || v.IsRelated(ctx.State, callbackQueryRaw)) is { } relatedVar)
+                v.IsStaticRelated(callbackQueryRaw) || v.IsRelated(ctx.State, callbackQueryRaw)) is { } relatedVar)
         {
             finished = await _handlers[relatedVar](_formMessageId.Value, callbackQueryRaw, ctx, token);
             _lastClickedVar = relatedVar;

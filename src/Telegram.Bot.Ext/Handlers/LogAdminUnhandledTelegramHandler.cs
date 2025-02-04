@@ -17,6 +17,9 @@ public class LogAdminUnhandledTelegramHandler : TelegramHandlerBase
 
     protected override async Task<bool> HandleAsync(Update request, IHandleContext ctx, CancellationToken token)
     {
+        if (request.Message is { Chat.Id: var chatId, MessageId: var messageId })
+            await ctx.Bot.ForwardMessageAsync(_usersProvider, Role.Administrator,
+                chatId, messageId, cancellationToken: token);
         await ctx.Bot.SendTextMessageAsync(_usersProvider, Role.Administrator,
             TryGetInfo(request) ?? $"Unknown update '{request.Type}' received",
             cancellationToken: token);
