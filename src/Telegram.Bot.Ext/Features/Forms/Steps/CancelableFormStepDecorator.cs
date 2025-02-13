@@ -24,6 +24,9 @@ public sealed class CancelableFormStepDecorator : FormStep
             && text == _cancelCommand)
             return null;
 
-        return await _inner.ExecuteAsync(request, ctx, token);
+        var nextStep = await _inner.ExecuteAsync(request, ctx, token);
+        return nextStep == _inner
+            ? this
+            : nextStep;
     }
 }
