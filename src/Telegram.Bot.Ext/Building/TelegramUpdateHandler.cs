@@ -12,15 +12,18 @@ internal class TelegramUpdateHandler : IUpdateHandler
     private readonly ILogger<TelegramUpdateHandler> _logger;
     private readonly IStatesRepository _statesRepository;
     private readonly HandlersExecutor _handlersExecutor;
+    private readonly ITelegramBot _bot;
 
     public TelegramUpdateHandler(
         ILogger<TelegramUpdateHandler> logger,
         IStatesRepository statesRepository,
-        HandlersExecutor handlersExecutor)
+        HandlersExecutor handlersExecutor,
+        ITelegramBot bot)
     {
         _logger = logger;
         _statesRepository = statesRepository;
         _handlersExecutor = handlersExecutor;
+        _bot = bot;
     }
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -34,7 +37,7 @@ internal class TelegramUpdateHandler : IUpdateHandler
         try
         {
             var state = await _statesRepository.GetOrCreateAsync(chatId, userId);
-            var ctx = new HandleContext(state, botClient);
+            var ctx = new HandleContext(state, _bot);
             var reachedEnd = await _handlersExecutor.ExecuteAsync(update, ctx, cancellationToken);
             await _statesRepository.SaveAsync(state);
 

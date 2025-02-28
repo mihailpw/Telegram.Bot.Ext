@@ -16,12 +16,12 @@ public interface IHandleContext
     long UserId { get; }
 
     IState State { get; }
-    ITelegramBotClient Bot { get; }
+    ITelegramBot Bot { get; }
 }
 
 internal sealed class HandleContext : IHandleContext
 {
-    public HandleContext(IState state, ITelegramBotClient bot)
+    public HandleContext(IState state, ITelegramBot bot)
     {
         Bot = bot;
         State = state;
@@ -31,5 +31,5 @@ internal sealed class HandleContext : IHandleContext
     public long UserId => State.UserId;
     
     public IState State { get; }
-    public ITelegramBotClient Bot { get; }
+    public ITelegramBot Bot { get; }
 }

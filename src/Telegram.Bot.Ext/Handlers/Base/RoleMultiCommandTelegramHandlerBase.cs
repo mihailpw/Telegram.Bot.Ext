@@ -5,13 +5,6 @@ namespace Telegram.Bot.Ext.Handlers.Base;
 
 public abstract class RoleMultiCommandTelegramHandlerBase : MultiCommandTelegramHandlerBase
 {
-    private readonly IUsersProvider _usersProvider;
-
-    protected RoleMultiCommandTelegramHandlerBase(IUsersProvider usersProvider)
-    {
-        _usersProvider = usersProvider;
-    }
-
     protected void RegisterCommand(
         string command,
         Handle handler,
@@ -20,6 +13,6 @@ public abstract class RoleMultiCommandTelegramHandlerBase : MultiCommandTelegram
         RegisterCommand(
             command,
             handler,
-            (message, _, _) => _usersProvider.CheckIfAsync(message.From!.Id, role));
+            (message, ctx, _) => ctx.Bot.GetFeature<IUsersProvider>().CheckIfAsync(message.From!.Id, role));
     }
 }

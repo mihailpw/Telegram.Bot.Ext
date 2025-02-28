@@ -79,7 +79,7 @@ public class TelegramBotExtensionsManyChatIdsSourceGenerator : ISourceGenerator
         var generatingParameters = parameters.Skip(1).ToList();
         sb.Append($@"
                     public static async {returnTypeName} {methodInfo.Name}(
-                        this ITelegramBotClient botClient,
+                        this ITelegramBot bot,
                         IEnumerable<long> chatIds,
                     ");
         foreach (var parameterInfo in generatingParameters)
@@ -93,7 +93,7 @@ public class TelegramBotExtensionsManyChatIdsSourceGenerator : ISourceGenerator
         sb.Length--;
         sb.Append($@"
                    )
-                      => await Task.WhenAll(chatIds.Select(chatId => botClient.{methodInfo.Name}(
+                      => await Task.WhenAll(chatIds.Select(chatId => bot.Client.{methodInfo.Name}(
                   ");
         foreach (var parameterInfo in generatingParameters)
         {

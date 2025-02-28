@@ -2,24 +2,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Telegram.Bot.Ext;
 
-public interface ITelegramManager
+public interface ITelegramBot
 {
-    ITelegramBotClient Bot { get; }
+    ITelegramBotClient Client { get; }
 
     T GetFeature<T>() where T : notnull;
 }
 
-public class TelegramManager : ITelegramManager
+public class TelegramBot : ITelegramBot
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public TelegramManager(ITelegramBotClient bot, IServiceProvider serviceProvider)
+    public TelegramBot(ITelegramBotClient client, IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        Bot = bot;
+        Client = client;
     }
 
-    public ITelegramBotClient Bot { get; }
+    public ITelegramBotClient Client { get; }
 
     public T GetFeature<T>() where T : notnull
     {

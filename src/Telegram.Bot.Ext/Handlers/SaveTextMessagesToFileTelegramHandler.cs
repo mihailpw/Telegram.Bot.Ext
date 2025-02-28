@@ -22,7 +22,7 @@ public class SaveTextMessagesToFileTelegramHandler : PassingTelegramHandlerBase
         {
             var content = $"{message.MessageId}: {message.Text}{Environment.NewLine}";
             var filePath = _hasBotIdPlaceholder
-                ? _filePath.Replace(BotIdPlaceholder, ctx.Bot.BotId.ToString())
+                ? _filePath.Replace(BotIdPlaceholder, ctx.Bot.Client.BotId.ToString())
                 : _filePath;
 
             await System.IO.File.AppendAllTextAsync(filePath, content, token);

@@ -26,13 +26,13 @@ internal sealed class FormContext : IFormContext
     public FormContext(IHandleContext handleContext)
     {
         _handleContext = handleContext;
-        Bot = new TelegramMessageIdCaptureBotClientDecorator(handleContext.Bot, id => _historyMessageIds.Add(id));
+        Bot = new TelegramMessageIdCaptureBotDecorator(handleContext.Bot, id => _historyMessageIds.Add(id));
     }
 
     public ChatId ChatId => _handleContext.ChatId;
     public long UserId => _handleContext.UserId;
     public IState State => _handleContext.State;
-    public ITelegramBotClient Bot { get; }
+    public ITelegramBot Bot { get; }
 
     public IFormBag Bag
     {

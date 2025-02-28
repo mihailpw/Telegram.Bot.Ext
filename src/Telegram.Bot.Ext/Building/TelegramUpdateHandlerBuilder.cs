@@ -33,6 +33,7 @@ public class TelegramUpdateHandlerBuilder
             ?? serviceProvider.GetService<IStatesRepository>()
             ?? new InMemoryStatesRepository();
 
-        return new TelegramUpdateHandler(logger, statesRepository, _handlersExecutorBuilder.Build(serviceProvider));
+        return new TelegramUpdateHandler(logger, statesRepository, _handlersExecutorBuilder.Build(serviceProvider),
+            serviceProvider.GetRequiredService<ITelegramBot>());
     }
 }

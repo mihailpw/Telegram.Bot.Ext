@@ -18,18 +18,16 @@ public abstract class TelegramHandlerBase : ITelegramHandler
 
 public abstract class RoleTelegramHandlerBase : ITelegramHandler
 {
-    private readonly IUsersProvider _usersProvider;
     private readonly Role[] _allowedRoles;
 
-    protected RoleTelegramHandlerBase(IUsersProvider usersProvider, params Role[] allowedRoles)
+    protected RoleTelegramHandlerBase(params Role[] allowedRoles)
     {
-        _usersProvider = usersProvider;
         _allowedRoles = allowedRoles;
     }
 
     public async Task HandleAsync(HandleNext next, Update request, IHandleContext ctx, CancellationToken token)
     {
-        if (await _usersProvider.CheckIfAsync(ctx.UserId, _allowedRoles)
+        if (await ctx.Bot.GetFeature<IUsersProvider>().CheckIfAsync(ctx.UserId, _allowedRoles)
             && await HandleAsync(request, ctx, token))
             return;
 
