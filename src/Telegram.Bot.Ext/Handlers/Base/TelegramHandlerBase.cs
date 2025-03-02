@@ -1,5 +1,4 @@
 using Telegram.Bot.Ext.Core;
-using Telegram.Bot.Ext.Features.Users;
 using Telegram.Bot.Ext.Features.Users.Models;
 using Telegram.Bot.Types;
 
@@ -27,7 +26,7 @@ public abstract class RoleTelegramHandlerBase : ITelegramHandler
 
     public async Task HandleAsync(HandleNext next, Update request, IHandleContext ctx, CancellationToken token)
     {
-        if (await ctx.Bot.GetFeature<IUsersProvider>().CheckIfAsync(ctx.UserId, _allowedRoles)
+        if (await ctx.Bot.GetUsersProvider().CheckIfAsync(ctx.UserId, _allowedRoles)
             && await HandleAsync(request, ctx, token))
             return;
 

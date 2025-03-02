@@ -93,7 +93,7 @@ public class TelegramBotExtensionsUsersProviderSourceGenerator : ISourceGenerato
         sb.Length--;
         sb.Append($@"
                    )
-                      => bot.GetFeature<IUsersProvider>().ForAllAsync(role,
+                      => bot.GetUsersProvider().ForAllAsync(role,
                           chatId => bot.Client.{methodInfo.Name}(
                   ");
         foreach (var parameterInfo in generatingParameters)

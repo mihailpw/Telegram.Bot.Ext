@@ -3,7 +3,7 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Ext;
 
-public static partial class TelegramBotClientExt
+public static partial class TelegramBotExt
 {
     public static async Task<IAsyncDisposable> SendProcessingMessageAsync(
         this ITelegramBot bot,

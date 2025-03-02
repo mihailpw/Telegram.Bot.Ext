@@ -1,5 +1,4 @@
 using System.Text;
-using Telegram.Bot.Ext.Features.Users;
 using Telegram.Bot.Ext.Features.Users.Models;
 using Telegram.Bot.Types;
 
@@ -26,7 +25,7 @@ public static class TelegramExt
         if (message == null)
             return;
 
-        var usersProvider = bot.GetFeature<IUsersProvider>();
+        var usersProvider = bot.GetUsersProvider();
         var userRole = await usersProvider.GetRoleAsync(message.Chat.Id);
         if (userRole is not Role.User)
             return;
