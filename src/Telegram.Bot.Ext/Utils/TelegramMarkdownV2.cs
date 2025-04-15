@@ -5,7 +5,7 @@ namespace Telegram.Bot.Ext.Utils;
 // https://core.telegram.org/bots/api#markdownv2-style
 public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
 {
-    private static readonly List<char> EscapeSymbols
+    private static readonly HashSet<char> EscapeSymbols
         = new() { '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!' };
 
     private readonly bool _trimNewLines;
@@ -45,7 +45,7 @@ public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
     public string Build()
     {
         if (_trimNewLines)
-            if (EndsWith(Environment.NewLine))
+            while (EndsWith(Environment.NewLine))
                 _sb.Length -= Environment.NewLine.Length;
 
         return _sb.ToString();
@@ -86,18 +86,7 @@ public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
     }
 
     private static StringBuilder Escape(string? input, bool escape = true)
-    {
-        var sb = new StringBuilder(input ?? "");
-        if (escape)
-            for (var i = 0; i < sb.Length; i++)
-                if (EscapeSymbols.Contains(sb[i]))
-                {
-                    sb.Insert(i, '\\');
-                    i++;
-                }
-
-        return sb;
-    }
+        => escape ? new StringBuilder().AppendEscaped(input, EscapeSymbols) : new StringBuilder(input ?? "");
 }
 
 public static class TelegramMarkdownV2Ext

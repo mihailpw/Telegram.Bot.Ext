@@ -73,8 +73,9 @@ public class TelegramBotExtensionsManyChatIdsSourceGenerator : ISourceGenerator
 
     private static void AppendMethod(StringBuilder sb, MethodInfo methodInfo, ParameterInfo[] parameters)
     {
+        var hasType = methodInfo.ReturnType.IsGenericType;
         var returnTypeName = "Task";
-        if (methodInfo.ReturnType.IsGenericType)
+        if (hasType)
             returnTypeName = $"Task<IReadOnlyList<{methodInfo.ReturnType.GenericTypeArguments.First().GetFullName()}>>";
         var generatingParameters = parameters.Skip(1).ToList();
         sb.Append($@"
@@ -91,15 +92,36 @@ public class TelegramBotExtensionsManyChatIdsSourceGenerator : ISourceGenerator
         }
 
         sb.Length--;
-        sb.Append($@"
+        if (Config.RunInParallel)
+        {
+            sb.Append($@"
                    )
                       => await Task.WhenAll(chatIds.Select(chatId => bot.Client.{methodInfo.Name}(
                   ");
-        foreach (var parameterInfo in generatingParameters)
-        {
-            sb.Append($"{parameterInfo.Name},");
+            foreach (var parameterInfo in generatingParameters)
+                sb.Append($"{parameterInfo.Name},");
+
+            sb.Length--;
+            sb.Append(")));");
         }
-        sb.Length--;
-        sb.Append(")));");
+        else
+        {
+            sb.Append(hasType
+                ? $@"
+                 ) {{
+                    var messages = new List<{methodInfo.ReturnType.GenericTypeArguments.First().GetFullName()}>();
+                    foreach (var chatId in chatIds)
+                        messages.Add(
+                            await bot.Client.{methodInfo.Name}(
+                                {string.Join(",", generatingParameters.Select(p => p.Name))}));
+                    return messages;
+                }}"
+                : $@"
+                 ) {{
+                    foreach (var chatId in chatIds)
+                        await bot.Client.{methodInfo.Name}(
+                            {string.Join(",", generatingParameters.Select(p => p.Name))});
+                }}");
+        }
     }
 }

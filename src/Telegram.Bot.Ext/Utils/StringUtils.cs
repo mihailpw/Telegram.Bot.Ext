@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Telegram.Bot.Ext.Utils;
 
 public static class StringUtils
@@ -30,5 +32,20 @@ public static class StringUtils
         return preparedCommand.StartsWith(CommandChar)
             ? preparedCommand
             : $"{CommandChar}{preparedCommand}";
+    }
+
+    public static StringBuilder AppendEscaped(this StringBuilder sb, string? input, HashSet<char>? escapeSymbols = null)
+    {
+        if (escapeSymbols is not null && input is not null)
+            foreach (var ch in input)
+            {
+                if (escapeSymbols.Contains(ch))
+                    sb.Append('\\');
+                sb.Append(ch);
+            }
+        else
+            sb.Append(input);
+
+        return sb;
     }
 }

@@ -10,6 +10,8 @@ internal sealed class TelegramMessageIdCaptureBotDecorator : ITelegramBot
         Client = new TelegramMessageIdCaptureBotClientDecorator(inner.Client, onMessageIdReceived);
     }
 
+    public string Title => _inner.Title;
+    public string UserName => _inner.UserName;
     public ITelegramBotClient Client { get; }
 
     public T GetFeature<T>() where T : notnull => _inner.GetFeature<T>();
