@@ -19,7 +19,7 @@ public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
     public TelegramMarkdownV2 With(TelegramMarkdownV2 inner)
         => Do(sb => sb.Append(inner._sb));
 
-    public TelegramMarkdownV2 WithText(string text, bool escape = true)
+    public TelegramMarkdownV2 WithText(string? text, bool escape = true)
         => Do(sb => sb.Append(Escape(text, escape)));
     public TelegramMarkdownV2 WithNewLine(bool forceAdd = false)
         => Do(sb => sb.AppendLine(), forceAdd || !EndsWith(Environment.NewLine));
@@ -41,6 +41,8 @@ public partial class TelegramMarkdownV2 : IEquatable<TelegramMarkdownV2>
         => Wrap("`", build);
     public TelegramMarkdownV2 WithCodeBlock(string? lang, Action<TelegramMarkdownV2> build)
         => Wrap($"```{Escape(lang)}", "```", build, true);
+    public TelegramMarkdownV2 WithQuote(Action<TelegramMarkdownV2> build)
+        => Wrap(">", Environment.NewLine, build);
 
     public string Build()
     {
@@ -105,6 +107,8 @@ public static class TelegramMarkdownV2Ext
         => target.WithInlineCode(b => b.WithText(text));
     public static TelegramMarkdownV2 WithCodeBlock(this TelegramMarkdownV2 target, string text, string? lang = default)
         => target.WithCodeBlock(lang, b => b.WithText(text));
+    public static TelegramMarkdownV2 WithQuote(this TelegramMarkdownV2 target, string text)
+        => target.WithQuote(b => b.WithText(text));
 
     public static TelegramMarkdownV2 Row(this TelegramMarkdownV2 target, Action<TelegramMarkdownV2> build)
     {

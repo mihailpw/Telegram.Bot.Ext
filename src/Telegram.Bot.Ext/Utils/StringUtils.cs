@@ -48,4 +48,20 @@ public static class StringUtils
 
         return sb;
     }
+
+    public static StringBuilder AppendEscaped(this StringBuilder sb, string? input, Dictionary<char, string>? escapeSymbols = null)
+    {
+        if (escapeSymbols is not null && input is not null)
+            foreach (var ch in input)
+            {
+                if (escapeSymbols.TryGetValue(ch, out var replaceSymbols))
+                    sb.Append(replaceSymbols);
+                else
+                    sb.Append(ch);
+            }
+        else
+            sb.Append(input);
+
+        return sb;
+    }
 }
