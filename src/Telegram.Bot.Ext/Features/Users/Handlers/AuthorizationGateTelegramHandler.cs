@@ -17,7 +17,7 @@ public class AuthorizationGateTelegramHandler : ITelegramHandler
 
     public async Task HandleAsync(HandleNext next, Update request, IHandleContext ctx, CancellationToken token)
     {
-        if (await ctx.Bot.GetUsersProvider().GetRoleAsync(ctx.UserId) is not null)
+        if (await ctx.Bot.GetUsersProvider().GetGroupAsync(ctx.UserId) is not null)
         {
             await next(ctx);
         }

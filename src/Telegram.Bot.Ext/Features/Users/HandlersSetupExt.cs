@@ -9,6 +9,6 @@ public static class HandlersSetupExt
     public static IHandlersSetup UseDefaultSubscribing(this IHandlersSetup setup)
         => setup.Use<SubscriptionTelegramHandler>();
 
-    public static IHandlersSetup UseGate(this IHandlersSetup setup, params Role[] allowedRoles)
-        => setup.Use<GateTelegramHandler>(allowedRoles);
+    public static IHandlersSetup UseGate(this IHandlersSetup setup, params Group[] allowedGroups)
+        => setup.Use<GateTelegramHandler>(allowedGroups);
 }

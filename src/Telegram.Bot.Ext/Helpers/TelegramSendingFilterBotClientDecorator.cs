@@ -12,7 +12,7 @@ public sealed class TelegramSendingFilterBotClientDecorator : ITelegramBotClient
 {
     private readonly ITelegramBotClient _inner;
     private readonly IUsersProvider _usersProvider;
-    private readonly Role _allowedRole;
+    private readonly Group _allowedGroup;
 
     public event AsyncEventHandler<ApiRequestEventArgs>? OnMakingApiRequest
     {
@@ -26,11 +26,11 @@ public sealed class TelegramSendingFilterBotClientDecorator : ITelegramBotClient
         remove => _inner.OnApiResponseReceived -= value;
     }
 
-    public TelegramSendingFilterBotClientDecorator(ITelegramBotClient inner, IUsersProvider usersProvider, Role allowedRole)
+    public TelegramSendingFilterBotClientDecorator(ITelegramBotClient inner, IUsersProvider usersProvider, Group allowedGroup)
     {
         _inner = inner;
         _usersProvider = usersProvider;
-        _allowedRole = allowedRole;
+        _allowedGroup = allowedGroup;
     }
 
     public bool LocalBotServer => _inner.LocalBotServer;
@@ -52,7 +52,7 @@ public sealed class TelegramSendingFilterBotClientDecorator : ITelegramBotClient
     public async Task<TResponse> MakeRequestAsync<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken)
     {
         if (TryGetChatId(request) is {} chatId
-            && !await _usersProvider.CheckIfAsync(chatId, _allowedRole))
+            && !await _usersProvider.CheckIfAsync(chatId, _allowedGroup))
             return default!;
         return await _inner.MakeRequestAsync(request, cancellationToken);
     }

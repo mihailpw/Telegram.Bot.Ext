@@ -19,11 +19,11 @@ public class InMemoryUserRepository<TUser> : IUserRepository<TUser> where TUser 
     public IAsyncEnumerable<TUser> GetAllAwait()
         => _users.ToAsyncEnumerable();
 
-    public Task<IReadOnlyCollection<TUser>> GetAllByRoleAsync(Role role)
-        => Task.FromResult<IReadOnlyCollection<TUser>>(_users.Where(u => u.Role == role).ToList());
+    public Task<IReadOnlyCollection<TUser>> GetAllByGroupAsync(Group group)
+        => Task.FromResult<IReadOnlyCollection<TUser>>(_users.Where(u => u.Group == group).ToList());
 
-    public IAsyncEnumerable<TUser> GetAllByRoleAwait(Role role)
-        => _users.Where(u => u.Role == role).ToAsyncEnumerable();
+    public IAsyncEnumerable<TUser> GetAllByGroupAwait(Group group)
+        => _users.Where(u => u.Group == group).ToAsyncEnumerable();
 
     public Task<TUser?> GetByIdAsync(long id)
         => Task.FromResult<TUser?>(_users.FirstOrDefault(u => u.Id == id));

@@ -12,8 +12,8 @@ public class FileUserRepository : IUserRepository<UserModel>
 
     private class UserDataModel : UserModel
     {
-        private UserDataModel(long id, Role role, string? userName, string name, DateTime created)
-            : base(id, role, userName, name, created)
+        private UserDataModel(long id, Group group, string? userName, string name, DateTime created)
+            : base(id, group, userName, name, created)
         {
         }
 
@@ -24,7 +24,7 @@ public class FileUserRepository : IUserRepository<UserModel>
                 return null;
             return new UserDataModel(
                 long.Parse(fields[0]),
-                (Role)int.Parse(fields[1]),
+                new Group(fields[1]),
                 fields[2],
                 fields[3],
                 DateTime.Parse(fields[4]))
@@ -35,7 +35,7 @@ public class FileUserRepository : IUserRepository<UserModel>
 
         public static string ToDataLine(UserModel user)
         {
-            return $"{user.Id},{user.Role:D},{user.UserName},{user.Name},{user.Created:O},{user.IsActive}";
+            return $"{user.Id},{user.Group:D},{user.UserName},{user.Name},{user.Created:O},{user.IsActive}";
         }
     }
 
@@ -70,11 +70,11 @@ public class FileUserRepository : IUserRepository<UserModel>
     public IAsyncEnumerable<UserModel> GetAllAwait()
         => ReadAllAsync(false);
 
-    public async Task<IReadOnlyCollection<UserModel>> GetAllByRoleAsync(Role role)
-        => await ReadAllAsync(false).Where(u => u.Role == role).ToListAsync();
+    public async Task<IReadOnlyCollection<UserModel>> GetAllByGroupAsync(Group group)
+        => await ReadAllAsync(false).Where(u => u.Group == group).ToListAsync();
 
-    public IAsyncEnumerable<UserModel> GetAllByRoleAwait(Role role)
-        => ReadAllAsync(false).Where(u => u.Role == role);
+    public IAsyncEnumerable<UserModel> GetAllByGroupAwait(Group group)
+        => ReadAllAsync(false).Where(u => u.Group == group);
 
     public async Task<UserModel?> GetByIdAsync(long id)
         => await ReadAllAsync(false).FirstOrDefaultAsync(u => u.Id == id);

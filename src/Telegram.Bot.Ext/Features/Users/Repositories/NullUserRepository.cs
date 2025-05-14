@@ -16,10 +16,10 @@ public class NullUserRepository<TUser> : IUserRepository<TUser> where TUser : IU
     public IAsyncEnumerable<TUser> GetAllAwait()
         => AsyncEnumerable.Empty<TUser>();
 
-    public Task<IReadOnlyCollection<TUser>> GetAllByRoleAsync(Role role)
+    public Task<IReadOnlyCollection<TUser>> GetAllByGroupAsync(Group group)
         => Task.FromResult<IReadOnlyCollection<TUser>>(Array.Empty<TUser>());
 
-    public IAsyncEnumerable<TUser> GetAllByRoleAwait(Role role)
+    public IAsyncEnumerable<TUser> GetAllByGroupAwait(Group group)
         => AsyncEnumerable.Empty<TUser>();
 
     public Task<TUser?> GetByIdAsync(long id)

@@ -12,7 +12,7 @@ public class MyChatChangedNotifyAdminTelegramHandler : TelegramHandlerBase
         if (request.MyChatMember is not { NewChatMember: not null, OldChatMember: not null } myChatMember)
             return false;
 
-        await ctx.Bot.SendTextMessageAsync(Role.Administrator,
+        await ctx.Bot.SendTextMessageAsync(Group.Administrator,
             $"User update: {myChatMember.From.ToNameString()} (current: {myChatMember.NewChatMember.Status}; previous: {myChatMember.OldChatMember.Status})",
             cancellationToken: token);
         return true;

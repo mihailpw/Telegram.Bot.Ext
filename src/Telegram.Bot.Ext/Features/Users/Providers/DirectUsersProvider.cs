@@ -4,39 +4,46 @@ namespace Telegram.Bot.Ext.Features.Users.Providers;
 
 public class DirectUsersProvider : IUsersProvider
 {
-    private readonly Dictionary<Role, IReadOnlyCollection<long>> _all;
+    private readonly Dictionary<Group, IReadOnlyCollection<long>> _all;
 
     public DirectUsersProvider(
         IReadOnlyCollection<long>? admins = default,
-        IReadOnlyCollection<long>? moderators = default,
         IReadOnlyCollection<long>? users = default)
     {
-        _all = new Dictionary<Role, IReadOnlyCollection<long>>
+        _all = new Dictionary<Group, IReadOnlyCollection<long>>
         {
-            [Role.Administrator] = admins ?? Array.Empty<long>(),
-            [Role.Moderator] = moderators ?? Array.Empty<long>(),
-            [Role.User] = users ?? Array.Empty<long>(),
+            [Group.Administrator] = admins ?? Array.Empty<long>(),
+            [Group.User] = users ?? Array.Empty<long>(),
         };
     }
 
-    public Task<bool> CheckIfAsync(long id, Role role)
-        => Task.FromResult(_all[role].Contains(id));
+    private IReadOnlyCollection<long> Get(Group group)
+        => _all.GetValueOrDefault(group, Array.Empty<long>());
 
-    public Task<bool> CheckIfAsync(long id, Role[] oneOfRoles)
-        => Task.FromResult(oneOfRoles.Any(r => _all[r].Contains(id)));
+    public Task<bool> CheckIfAsync(long id, Group group)
+        => Task.FromResult(Get(group).Contains(id));
 
-    public Task<Role?> GetRoleAsync(long id)
+    public Task<bool> CheckIfAsync(long id, Group[] oneOfGroups)
+        => Task.FromResult(oneOfGroups.Any(r => _all[r].Contains(id)));
+
+    public Task<Group?> GetGroupAsync(long id)
     {
         foreach (var kvp in _all)
             if (kvp.Value.Contains(id))
-                return Task.FromResult<Role?>(kvp.Key);
+                return Task.FromResult<Group?>(kvp.Key);
 
-        return Task.FromResult<Role?>(null);
+        return Task.FromResult<Group?>(null);
     }
 
-    public IAsyncEnumerable<long> GetAllAwait(Role role)
-        => _all[role].ToAsyncEnumerable();
+    public async Task<IReadOnlyCollection<Group>> GetGroupsAsync(long id)
+    {
+        var group = await GetGroupAsync(id);
+        return group.HasValue ? new[] { group.Value } : Array.Empty<Group>();
+    }
 
-    public Task<IReadOnlyCollection<long>> GetAllAsync(Role role)
-        => Task.FromResult(_all[role]);
+    public IAsyncEnumerable<long> GetAllAwait(Group group)
+        => Get(group).ToAsyncEnumerable();
+
+    public Task<IReadOnlyCollection<long>> GetAllAsync(Group group)
+        => Task.FromResult(Get(group));
 }

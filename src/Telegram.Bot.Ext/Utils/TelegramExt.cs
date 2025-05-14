@@ -7,36 +7,36 @@ namespace Telegram.Bot.Ext.Utils;
 public static class TelegramExt
 {
     public static async Task ForwardSentFirstMessageAsync<TMessages>(this Task<TMessages> messages, ITelegramBot bot,
-        Role role, CancellationToken token)
+        Group group, CancellationToken token)
         where TMessages : IEnumerable<Message>
-        => await ForwardSentFirstMessageAsync(await messages, bot, role, token);
+        => await ForwardSentFirstMessageAsync(await messages, bot, group, token);
 
     public static Task ForwardSentFirstMessageAsync(this IEnumerable<Message> messages, ITelegramBot bot,
-        Role role, CancellationToken token)
-        => ForwardSentMessageAsync(messages.FirstOrDefault(), bot, role, token);
+        Group group, CancellationToken token)
+        => ForwardSentMessageAsync(messages.FirstOrDefault(), bot, group, token);
 
     public static async Task ForwardSentMessageAsync(this Task<Message> message, ITelegramBot bot,
-        Role role, CancellationToken token)
-        => await ForwardSentMessageAsync(await message, bot, role, token);
+        Group group, CancellationToken token)
+        => await ForwardSentMessageAsync(await message, bot, group, token);
 
     public static async Task ForwardSentMessageAsync(this Message? message, ITelegramBot bot,
-        Role role, CancellationToken token)
+        Group group, CancellationToken token)
     {
         if (message == null)
             return;
 
         var usersProvider = bot.GetUsersProvider();
-        var userRole = await usersProvider.GetRoleAsync(message.Chat.Id);
-        if (userRole is not Role.User)
+        var userGroup = await usersProvider.GetGroupAsync(message.Chat.Id);
+        if (userGroup != Group.User)
             return;
 
-        await bot.ForwardMessageAsync(role, message.Chat.Id, message.MessageId, cancellationToken: token);
+        await bot.ForwardMessageAsync(group, message.Chat.Id, message.MessageId, cancellationToken: token);
     }
 
-    public static string ToNameString(this User user, string? predict = default)
+    public static string ToNameString(this User user, string? predict = null)
         => ToNameString(predict, user.FirstName, user.LastName, user.Username, user.Id);
 
-    public static string ToNameString(this Chat chat, string? predict = default)
+    public static string ToNameString(this Chat chat, string? predict = null)
         => ToNameString(predict, chat.FirstName, chat.LastName, chat.Username, chat.Id);
 
     private static string ToNameString(string? predict, string? firstName, string? lastName, string? userName, long id)

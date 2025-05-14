@@ -26,7 +26,7 @@ public class SubscriptionTelegramHandler : MultiCommandTelegramHandlerBase
         if (message is not { From.Id: var userId, Chat: { } chat })
             return;
 
-        var user = UserModel.Create(userId, Role.User, chat.Username, $"{chat.FirstName} {chat.LastName}");
+        var user = UserModel.Create(userId, Group.User, chat.Username, $"{chat.FirstName} {chat.LastName}");
         var added = await _userRepository.AddUserAsync(user);
 
         var response = added ? SubscribedMessage : AlreadySubscribedMessage;

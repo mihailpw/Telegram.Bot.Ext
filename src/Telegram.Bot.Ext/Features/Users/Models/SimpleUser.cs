@@ -2,12 +2,12 @@ namespace Telegram.Bot.Ext.Features.Users.Models;
 
 public class SimpleUser : IUser
 {
-    public SimpleUser(long id, Role role)
+    public SimpleUser(long id, Group group)
     {
         Id = id;
-        Role = role;
+        Group = group;
     }
 
     public long Id { get; }
-    public Role Role { get; }
+    public Group Group { get; }
 }

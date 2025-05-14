@@ -8,18 +8,21 @@ public sealed class NullUsersProvider : IUsersProvider
 
     private NullUsersProvider() { }
 
-    public Task<bool> CheckIfAsync(long id, Role role)
+    public Task<bool> CheckIfAsync(long id, Group group)
         => Task.FromResult(false);
 
-    public Task<bool> CheckIfAsync(long id, Role[] oneOfRoles)
+    public Task<bool> CheckIfAsync(long id, Group[] oneOfGroups)
         => Task.FromResult(false);
 
-    public Task<Role?> GetRoleAsync(long id)
-        => Task.FromResult<Role?>(null);
+    public Task<Group?> GetGroupAsync(long id)
+        => Task.FromResult<Group?>(null);
 
-    public IAsyncEnumerable<long> GetAllAwait(Role role)
+    public Task<IReadOnlyCollection<Group>> GetGroupsAsync(long id)
+        => Task.FromResult<IReadOnlyCollection<Group>>(Array.Empty<Group>());
+
+    public IAsyncEnumerable<long> GetAllAwait(Group group)
         => AsyncEnumerable.Empty<long>();
 
-    public Task<IReadOnlyCollection<long>> GetAllAsync(Role role)
+    public Task<IReadOnlyCollection<long>> GetAllAsync(Group group)
         => Task.FromResult<IReadOnlyCollection<long>>(Array.Empty<long>());
 }

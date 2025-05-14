@@ -15,46 +15,55 @@ public class UsersProviderToRepositoryAdapter<TUser> : IUsersProvider where TUse
         _admins = admins;
     }
 
-    public async Task<bool> CheckIfAsync(long id, Role role)
+    public async Task<bool> CheckIfAsync(long id, Group group)
     {
-        if (role == Role.Administrator)
+        if (group == Group.Administrator)
             return _admins.Contains(id);
 
         var user = await _userRepository.GetByIdAsync(id);
-        return user?.Role == role;
+        return user?.Group == group;
     }
 
-    public async Task<bool> CheckIfAsync(long id, Role[] oneOfRoles)
+    public async Task<bool> CheckIfAsync(long id, Group[] oneOfGroups)
     {
-        if (oneOfRoles.Contains(Role.Administrator))
+        if (oneOfGroups.Contains(Group.Administrator))
             return _admins.Contains(id);
 
         var user = await _userRepository.GetByIdAsync(id);
-        return user is not null && oneOfRoles.Contains(user.Role);
+        return user is not null && oneOfGroups.Contains(user.Group);
     }
 
-    public async Task<Role?> GetRoleAsync(long id)
+    public async Task<Group?> GetGroupAsync(long id)
     {
         if (_admins.Contains(id))
-            return Role.Administrator;
+            return Group.Administrator;
 
         var user = await _userRepository.GetByIdAsync(id);
-        return user?.Role;
+        return user?.Group;
     }
 
-    public IAsyncEnumerable<long> GetAllAwait(Role role)
+    public async Task<IReadOnlyCollection<Group>> GetGroupsAsync(long id)
     {
-        return role == Role.Administrator
+        if (_admins.Contains(id))
+            return new[] { Group.Administrator };
+
+        var user = await _userRepository.GetByIdAsync(id);
+        return user is not null ? new[] { user.Group } : Array.Empty<Group>();
+    }
+
+    public IAsyncEnumerable<long> GetAllAwait(Group group)
+    {
+        return group == Group.Administrator
             ? _admins.ToAsyncEnumerable()
-            : _userRepository.GetAllByRoleAwait(role).Select(u => u.Id);
+            : _userRepository.GetAllByGroupAwait(group).Select(u => u.Id);
     }
 
-    public async Task<IReadOnlyCollection<long>> GetAllAsync(Role role)
+    public async Task<IReadOnlyCollection<long>> GetAllAsync(Group group)
     {
-        if (role == Role.Administrator)
+        if (group == Group.Administrator)
             return _admins;
 
-        var users = await _userRepository.GetAllByRoleAsync(role);
+        var users = await _userRepository.GetAllByGroupAsync(group);
         return users.Select(u => u.Id).ToList();
     }
 }
@@ -68,32 +77,38 @@ public class UsersProviderToRepositoryAdapter2<TUser> : IUsersProvider where TUs
         _userRepository = userRepository;
     }
 
-    public async Task<bool> CheckIfAsync(long id, Role role)
+    public async Task<bool> CheckIfAsync(long id, Group group)
     {
         var user = await _userRepository.GetByIdAsync(id);
-        return user?.Role == role;
+        return user?.Group == group;
     }
 
-    public async Task<bool> CheckIfAsync(long id, Role[] oneOfRoles)
+    public async Task<bool> CheckIfAsync(long id, Group[] oneOfGroups)
     {
         var user = await _userRepository.GetByIdAsync(id);
-        return user is not null && oneOfRoles.Contains(user.Role);
+        return user is not null && oneOfGroups.Contains(user.Group);
     }
 
-    public async Task<Role?> GetRoleAsync(long id)
+    public async Task<Group?> GetGroupAsync(long id)
     {
         var user = await _userRepository.GetByIdAsync(id);
-        return user?.Role;
+        return user?.Group;
     }
 
-    public IAsyncEnumerable<long> GetAllAwait(Role role)
+    public async Task<IReadOnlyCollection<Group>> GetGroupsAsync(long id)
     {
-        return _userRepository.GetAllByRoleAwait(role).Select(u => u.Id);
+        var user = await _userRepository.GetByIdAsync(id);
+        return user is not null ? new[] { user.Group } : Array.Empty<Group>();
     }
 
-    public async Task<IReadOnlyCollection<long>> GetAllAsync(Role role)
+    public IAsyncEnumerable<long> GetAllAwait(Group group)
     {
-        var users = await _userRepository.GetAllByRoleAsync(role);
+        return _userRepository.GetAllByGroupAwait(group).Select(u => u.Id);
+    }
+
+    public async Task<IReadOnlyCollection<long>> GetAllAsync(Group group)
+    {
+        var users = await _userRepository.GetAllByGroupAsync(group);
         return users.Select(u => u.Id).ToList();
     }
 }

@@ -80,7 +80,7 @@ public class TelegramBotExtensionsUsersProviderSourceGenerator : ISourceGenerato
         sb.Append($@"
                     public static {returnTypeName} {methodInfo.Name}(
                         this ITelegramBot bot,
-                        Role role,
+                        Group group,
                     ");
         foreach (var parameterInfo in generatingParameters)
         {
@@ -93,7 +93,7 @@ public class TelegramBotExtensionsUsersProviderSourceGenerator : ISourceGenerato
         sb.Length--;
         sb.Append($@"
                    )
-                      => bot.GetUsersProvider().ForAllAsync(role,
+                      => bot.GetUsersProvider().ForAllAsync(group,
                           chatId => bot.Client.{methodInfo.Name}(
                   ");
         foreach (var parameterInfo in generatingParameters)
