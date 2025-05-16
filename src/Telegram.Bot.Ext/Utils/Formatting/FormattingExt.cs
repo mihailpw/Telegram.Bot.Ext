@@ -1,3 +1,5 @@
+using Telegram.Bot.Types;
+
 namespace Telegram.Bot.Ext.Utils.Formatting;
 
 public static class FormattingExt
@@ -14,10 +16,17 @@ public static class FormattingExt
         => target.WithSpoiler(b => b.WithText(text));
     public static IFormatting WithInlineCode(this IFormatting target, string text)
         => target.WithInlineCode(b => b.WithText(text));
-    public static IFormatting WithCodeBlock(this IFormatting target, string text, string? lang = default)
+    public static IFormatting WithCodeBlock(this IFormatting target, string text, string? lang = null)
         => target.WithCodeBlock(lang, b => b.WithText(text));
     public static IFormatting WithQuote(this IFormatting target, string text)
         => target.WithQuote(b => b.WithText(text));
+    public static IFormatting WithUserLinkOrName(this IFormatting target, Chat chat)
+        => target.WithText(chat.Username is not null
+            ? $"@{chat.Username}"
+            : TelegramExt.FormatNameString(firstName: chat.FirstName, lastName: chat.LastName));
+    public static IFormatting WithUserMention(this IFormatting target, Chat chat)
+        => target.WithUserMention(
+            TelegramExt.FormatNameString(firstName: chat.FirstName, lastName: chat.LastName), chat.Id);
 
     public static IFormatting Row(this IFormatting target, Action<IFormatting> build)
     {

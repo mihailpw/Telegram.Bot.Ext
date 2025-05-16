@@ -1,20 +1,47 @@
+using Telegram.Bot.Ext.Features.Messages;
 using Telegram.Bot.Ext.Features.Users.Models;
 using Telegram.Bot.Ext.Handlers.Base;
 using Telegram.Bot.Ext.Utils;
+using Telegram.Bot.Ext.Utils.Formatting;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Ext.Handlers;
 
 public class LogAdminUnhandledTelegramHandler : TelegramHandlerBase
 {
+    private readonly string? _sendMessageCommand;
+
+    public LogAdminUnhandledTelegramHandler(string? sendMessageCommand = null)
+    {
+        _sendMessageCommand = sendMessageCommand;
+    }
+
     protected override async Task<bool> HandleAsync(Update request, IHandleContext ctx, CancellationToken token)
     {
-        if (request.Message is { Chat.Id: var chatId, MessageId: var messageId })
+        if (await ctx.Bot.GetUsersProvider().CheckIfAsync(ctx.UserId, Group.Administrator))
+            return false;
+
+        if (request.Message is { Chat: var chat, MessageId: var messageId })
+        {
             await ctx.Bot.ForwardMessageAsync(Group.Administrator,
-                chatId, messageId, cancellationToken: token);
-        await ctx.Bot.SendTextMessageAsync(Group.Administrator,
-            TryGetInfo(request) ?? $"Unknown update '{request.Type}' received",
-            cancellationToken: token);
+                chat.Id, messageId, cancellationToken: token);
+
+            var adminText = new MarkdownV2Formatting()
+                .WithText("Received message from ").WithUserLinkOrName(chat).WithText(".");
+            if (_sendMessageCommand != null)
+                adminText.WithNewLine().WithText($"Respond /{_sendMessageCommand}_{chat.Id}");
+
+            var sentAdminMsgs = await ctx.Bot.SendTextMessageAsync(Group.Administrator,
+                adminText.Build(), parseMode: adminText.TelegramParseMode, cancellationToken: token);
+            ctx.Bot.GetMessageRemover().ScheduleForRemoval(sentAdminMsgs, TimeSpan.FromHours(1));
+        }
+        else
+        {
+            await ctx.Bot.SendTextMessageAsync(Group.Administrator,
+                TryGetInfo(request) ?? $"Unknown update '{request.Type}' received",
+                cancellationToken: token);
+        }
         return false;
     }
 

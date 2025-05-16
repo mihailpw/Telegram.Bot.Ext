@@ -5,16 +5,19 @@ namespace Telegram.Bot.Ext.Features.Users.Providers;
 public class DirectUsersProvider : IUsersProvider
 {
     private readonly Dictionary<Group, IReadOnlyCollection<long>> _all;
+    private readonly HashSet<long> _allUsers = new();
 
     public DirectUsersProvider(
-        IReadOnlyCollection<long>? admins = default,
-        IReadOnlyCollection<long>? users = default)
+        IReadOnlyCollection<long>? admins = null,
+        IReadOnlyCollection<long>? users = null)
     {
         _all = new Dictionary<Group, IReadOnlyCollection<long>>
         {
             [Group.Administrator] = admins ?? Array.Empty<long>(),
             [Group.User] = users ?? Array.Empty<long>(),
         };
+        _allUsers.UnionWith(admins ?? Array.Empty<long>());
+        _allUsers.UnionWith(users ?? Array.Empty<long>());
     }
 
     private IReadOnlyCollection<long> Get(Group group)
@@ -40,6 +43,9 @@ public class DirectUsersProvider : IUsersProvider
         var group = await GetGroupAsync(id);
         return group.HasValue ? new[] { group.Value } : Array.Empty<Group>();
     }
+
+    public IAsyncEnumerable<long> GetAllAwait()
+        => _allUsers.ToAsyncEnumerable();
 
     public IAsyncEnumerable<long> GetAllAwait(Group group)
         => Get(group).ToAsyncEnumerable();

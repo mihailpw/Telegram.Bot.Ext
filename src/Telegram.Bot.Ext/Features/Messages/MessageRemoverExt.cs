@@ -22,8 +22,6 @@ public static class MessageRemoverExt
     public static void ScheduleForRemoval(this IMessageRemover target, IEnumerable<Types.Message> messages, TimeSpan deleteIn, string groupKey = "")
     {
         foreach (var message in messages)
-        {
             target.ScheduleForRemoval(message.Chat.Id, message.MessageId, deleteIn, groupKey);
-        }
     }
 }

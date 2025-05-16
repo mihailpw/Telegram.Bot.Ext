@@ -4,7 +4,9 @@ namespace Telegram.Bot.Ext.Utils;
 
 public static class StringUtils
 {
-    private const string CommandChar = "/";
+    private const char CommandChar = '/';
+    private const char ArgumentsSeparator = '_';
+    private const char ChatSeparator = '@';
 
     public static bool IsCommand(string? text)
         => text?.StartsWith(CommandChar) == true;
@@ -23,12 +25,23 @@ public static class StringUtils
         return command == PrepareCommand(text);
     }
 
+    public static IEnumerable<string>? GetCommandArguments(string? text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return null;
+
+        if (!text.StartsWith(CommandChar))
+            return null;
+
+        return text.Split(ArgumentsSeparator).Skip(1);
+    }
+
     public static string PrepareCommand(string command)
     {
         if (string.IsNullOrEmpty(command))
             throw new ArgumentException("Command is empty");
 
-        var preparedCommand = command.Split(' ', '@').First();
+        var preparedCommand = command.Split(ArgumentsSeparator, ChatSeparator).First();
         return preparedCommand.StartsWith(CommandChar)
             ? preparedCommand
             : $"{CommandChar}{preparedCommand}";

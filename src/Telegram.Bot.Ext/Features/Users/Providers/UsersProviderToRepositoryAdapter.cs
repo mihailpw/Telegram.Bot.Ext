@@ -51,6 +51,17 @@ public class UsersProviderToRepositoryAdapter<TUser> : IUsersProvider where TUse
         return user is not null ? new[] { user.Group } : Array.Empty<Group>();
     }
 
+    public async IAsyncEnumerable<long> GetAllAwait()
+    {
+        var seen = new HashSet<long>();
+        foreach (var admin in _admins)
+            if (seen.Add(admin))
+                yield return admin;
+        await foreach (var user in _userRepository.GetAllAwait())
+            if (seen.Add(user.Id))
+                yield return user.Id;
+    }
+
     public IAsyncEnumerable<long> GetAllAwait(Group group)
     {
         return group == Group.Administrator
@@ -99,6 +110,11 @@ public class UsersProviderToRepositoryAdapter2<TUser> : IUsersProvider where TUs
     {
         var user = await _userRepository.GetByIdAsync(id);
         return user is not null ? new[] { user.Group } : Array.Empty<Group>();
+    }
+
+    public IAsyncEnumerable<long> GetAllAwait()
+    {
+        return _userRepository.GetAllAwait().Select(u => u.Id);
     }
 
     public IAsyncEnumerable<long> GetAllAwait(Group group)

@@ -8,14 +8,19 @@ public interface IUsersProvider
     Task<bool> CheckIfAsync(long id, Group[] oneOfGroups);
     Task<Group?> GetGroupAsync(long id);
     Task<IReadOnlyCollection<Group>> GetGroupsAsync(long id);
+    IAsyncEnumerable<long> GetAllAwait();
     IAsyncEnumerable<long> GetAllAwait(Group group);
     Task<IReadOnlyCollection<long>> GetAllAsync(Group group);
 }
 
 public class InMemoryUsersProvider : IUsersProvider
 {
+    private static readonly HashSet<long> EmptyHashSetLong = new();
+    private static readonly HashSet<Group> EmptyHashSetGroup = new();
+
     private readonly Dictionary<Group, HashSet<long>> _groups;
     private readonly Dictionary<long, HashSet<Group>> _users = new();
+    private readonly HashSet<long> _allUsers = new();
 
     public InMemoryUsersProvider(Dictionary<Group, HashSet<long>> groups)
     {
@@ -26,6 +31,7 @@ public class InMemoryUsersProvider : IUsersProvider
             if (!_users.ContainsKey(user))
                 _users.Add(user, new HashSet<Group>());
             _users[user].Add(group);
+            _allUsers.Add(user);
         }
     }
 
@@ -33,10 +39,10 @@ public class InMemoryUsersProvider : IUsersProvider
         => new(groups.ToDictionary(kvp => new Group(kvp.Key), kvp => new HashSet<long>(kvp.Value)));
     
     private HashSet<long> Get(Group group)
-        => _groups.GetValueOrDefault(group, new HashSet<long>());
+        => _groups.GetValueOrDefault(group, EmptyHashSetLong);
     
     private HashSet<Group> Get(long id)
-        => _users.GetValueOrDefault(id, new HashSet<Group>());
+        => _users.GetValueOrDefault(id, EmptyHashSetGroup);
 
     public Task<bool> CheckIfAsync(long id, Group group)
         => Task.FromResult(Get(group).Contains(id));
@@ -52,6 +58,9 @@ public class InMemoryUsersProvider : IUsersProvider
 
     public Task<IReadOnlyCollection<Group>> GetGroupsAsync(long id)
         => Task.FromResult<IReadOnlyCollection<Group>>(Get(id));
+
+    public IAsyncEnumerable<long> GetAllAwait()
+        => _allUsers.ToAsyncEnumerable();
 
     public IAsyncEnumerable<long> GetAllAwait(Group group)
         => Get(group).ToAsyncEnumerable();

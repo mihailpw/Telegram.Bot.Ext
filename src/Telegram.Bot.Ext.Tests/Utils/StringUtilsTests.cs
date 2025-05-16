@@ -8,7 +8,7 @@ public class StringUtilsTests : TestClassBase
     [TestCase(null, ExpectedResult = false)]
     [TestCase("test", ExpectedResult = false)]
     [TestCase("/test", ExpectedResult = true)]
-    [TestCase("/test 123", ExpectedResult = true)]
+    [TestCase("/test_123", ExpectedResult = true)]
     [TestCase("/test123", ExpectedResult = true)]
     public bool IsCommand_(string? text)
     {
@@ -16,7 +16,7 @@ public class StringUtilsTests : TestClassBase
     }
 
     [TestCase("/test", "test", ExpectedResult = true)]
-    [TestCase("/test 123", "test", ExpectedResult = true)]
+    [TestCase("/test_123", "test", ExpectedResult = true)]
     [TestCase("/test", "test2", ExpectedResult = false)]
     [TestCase("/test2", "test", ExpectedResult = false)]
     public bool IsExactCommand_Valid_ReturnCorrect(string? text, string command)
@@ -33,8 +33,8 @@ public class StringUtilsTests : TestClassBase
     [TestCase("test", ExpectedResult = "/test")]
     [TestCase("command", ExpectedResult = "/command")]
     [TestCase("/test", ExpectedResult = "/test")]
-    [TestCase("test 1234", ExpectedResult = "/test")]
-    [TestCase("/test 1234", ExpectedResult = "/test")]
+    [TestCase("test_1234", ExpectedResult = "/test")]
+    [TestCase("/test_1234", ExpectedResult = "/test")]
     public string PrepareCommand(string command)
     {
         return StringUtils.PrepareCommand(command);

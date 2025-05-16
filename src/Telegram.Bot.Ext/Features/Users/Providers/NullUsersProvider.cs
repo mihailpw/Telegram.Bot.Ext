@@ -20,6 +20,9 @@ public sealed class NullUsersProvider : IUsersProvider
     public Task<IReadOnlyCollection<Group>> GetGroupsAsync(long id)
         => Task.FromResult<IReadOnlyCollection<Group>>(Array.Empty<Group>());
 
+    public IAsyncEnumerable<long> GetAllAwait()
+        => AsyncEnumerable.Empty<long>();
+
     public IAsyncEnumerable<long> GetAllAwait(Group group)
         => AsyncEnumerable.Empty<long>();
 

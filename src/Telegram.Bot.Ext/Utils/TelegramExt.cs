@@ -34,21 +34,20 @@ public static class TelegramExt
     }
 
     public static string ToNameString(this User user, string? predict = null)
-        => ToNameString(predict, user.FirstName, user.LastName, user.Username, user.Id);
+        => FormatNameString(predict, user.FirstName, user.LastName, user.Username, user.Id);
 
     public static string ToNameString(this Chat chat, string? predict = null)
-        => ToNameString(predict, chat.FirstName, chat.LastName, chat.Username, chat.Id);
+        => FormatNameString(predict, chat.FirstName, chat.LastName, chat.Username, chat.Id);
 
-    private static string ToNameString(string? predict, string? firstName, string? lastName, string? userName, long id)
+    public static string FormatNameString(string? predict = null, string? firstName = null, string? lastName = null,
+        string? userName = null, long? id = null)
     {
         var sb = new StringBuilder(predict);
         if (!string.IsNullOrEmpty(predict))
             sb.Append(' ');
         
         if (!string.IsNullOrEmpty(firstName))
-        {
             sb.Append(firstName);
-        }
 
         if (!string.IsNullOrEmpty(lastName))
         {
@@ -60,15 +59,17 @@ public static class TelegramExt
         if (string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName))
             sb.Append("<unnamed>");
 
-        sb.Append(" (");
-        if (!string.IsNullOrEmpty(userName))
+        if (!string.IsNullOrEmpty(userName) || id.HasValue)
         {
-            sb.Append(userName);
-            sb.Append('/');
+            sb.Append(" (");
+            if (!string.IsNullOrEmpty(userName))
+                sb.Append(userName);
+            if (!string.IsNullOrEmpty(userName) && id.HasValue)
+                sb.Append('/');
+            if (id.HasValue)
+                sb.Append(id);
+            sb.Append(")");
         }
-
-        sb.Append(id);
-        sb.Append(")");
         return sb.ToString();
     }
 }
