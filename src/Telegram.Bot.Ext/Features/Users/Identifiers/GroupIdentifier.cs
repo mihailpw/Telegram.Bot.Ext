@@ -11,8 +11,12 @@ public class GroupIdentifier : Identifier
         _group = group;
     }
 
+    public new static GroupIdentifier Parse(string data) => new(new Group(data));
+
     public override IAsyncEnumerable<long> PrepareChatIdsAwait(IUsersProvider usersProvider)
-        => usersProvider.GetAllAwait(_group);
+    {
+        return usersProvider.GetAllAwait(_group);
+    }
 
     public override string ToString() => _group.ToString();
 }

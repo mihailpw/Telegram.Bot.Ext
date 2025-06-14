@@ -2,18 +2,23 @@ namespace Telegram.Bot.Ext.Features.Users.Identifiers;
 
 public class ChatIdIdentifier : Identifier
 {
-    private readonly long _chatId;
+    private readonly HashSet<long> _chatIds;
 
-    public ChatIdIdentifier(long chatId)
+    public ChatIdIdentifier(IEnumerable<long> chatIds)
     {
-        _chatId = chatId;
+        _chatIds = new HashSet<long>(chatIds);
     }
 
-    public override async IAsyncEnumerable<long> PrepareChatIdsAwait(IUsersProvider usersProvider)
+    public new static ChatIdIdentifier Parse(string input)
+        => new(input.Split(',', StringSplitOptions.TrimEntries)
+            .Select(d => long.TryParse(d.Trim(), out var chatId) ? chatId : (long?)null)
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value));
+
+    public override IAsyncEnumerable<long> PrepareChatIdsAwait(IUsersProvider usersProvider)
     {
-        yield return _chatId;
-        await Task.CompletedTask;
+        return _chatIds.ToAsyncEnumerable();
     }
 
-    public override string ToString() => _chatId.ToString();
+    public override string ToString() => string.Join(',', _chatIds);
 }

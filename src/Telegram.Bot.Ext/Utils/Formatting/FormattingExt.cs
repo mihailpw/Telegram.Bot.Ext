@@ -35,6 +35,12 @@ public static class FormattingExt
         return target;
     }
 
+    public static IFormatting WithBuilder(this IFormatting target, Action<IFormatting> build)
+    {
+        build(target);
+        return target;
+    }
+
     public static IFormatting If(this IFormatting target, bool condition,
         Action<IFormatting> buildIf, Action<IFormatting>? buildElse = null)
     {
