@@ -5,15 +5,15 @@ namespace Telegram.Bot.Ext.Building.Internal;
 
 internal class CompositeTelegramHandler : TelegramHandlerBase
 {
-    private readonly HandlersExecutor _handlersExecutor;
+    private readonly TelegramHandlersExecutor _telegramHandlersExecutor;
 
-    public CompositeTelegramHandler(HandlersExecutor handlersExecutor)
+    public CompositeTelegramHandler(TelegramHandlersExecutor telegramHandlersExecutor)
     {
-        _handlersExecutor = handlersExecutor;
+        _telegramHandlersExecutor = telegramHandlersExecutor;
     }
 
     protected override async Task<bool> HandleAsync(Update request, IHandleContext ctx, CancellationToken token)
     {
-        return await _handlersExecutor.ExecuteAsync(request, ctx, token);
+        return await _telegramHandlersExecutor.ExecuteAsync(request, ctx, token);
     }
 }

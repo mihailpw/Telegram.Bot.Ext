@@ -6,9 +6,9 @@ namespace Telegram.Bot.Ext.Features.Users;
 
 public static class HandlersSetupExt
 {
-    public static IHandlersSetup UseDefaultSubscribing(this IHandlersSetup setup)
-        => setup.Use<SubscriptionTelegramHandler>();
+    public static ITelegramHandlersBuilder UseDefaultSubscribing(this ITelegramHandlersBuilder builder)
+        => builder.Use<SubscriptionTelegramHandler>();
 
-    public static IHandlersSetup UseGate(this IHandlersSetup setup, params Group[] allowedGroups)
-        => setup.Use<GateTelegramHandler>(allowedGroups);
+    public static ITelegramHandlersBuilder UseGate(this ITelegramHandlersBuilder builder, params Group[] allowedGroups)
+        => builder.Use<GateTelegramHandler>(allowedGroups);
 }

@@ -4,9 +4,9 @@ namespace Telegram.Bot.Ext.Handlers.Routing;
 
 public class RouterTelegramHandlerBuilder : IRoutesSetup
 {
-    private class CompositeHandlerBuilder : IHandlersSetup
+    private class CompositeTelegramHandlerBuilder : ITelegramHandlersBuilder
     {
-        public IHandlersSetup Use(Func<IServiceProvider, ITelegramHandler> telegramHandlerFactory)
+        public ITelegramHandlersBuilder Use(Func<IServiceProvider, ITelegramHandler> telegramHandlerFactory)
         {
             throw new NotImplementedException();
         }
@@ -20,9 +20,9 @@ public class RouterTelegramHandlerBuilder : IRoutesSetup
     private readonly List<(RouterTelegramHandler.AsyncSelector selector, ITelegramHandler handler)> _handlers = new();
     private ITelegramHandler? _defaultHandler;
 
-    public IRoutesSetup Redirect(RouterTelegramHandler.AsyncSelector selector, Action<IHandlersSetup> building)
+    public IRoutesSetup Redirect(RouterTelegramHandler.AsyncSelector selector, Action<ITelegramHandlersBuilder> building)
     {
-        var builder = new CompositeHandlerBuilder();
+        var builder = new CompositeTelegramHandlerBuilder();
         building(builder);
         var handler = builder.Build();
         return this;

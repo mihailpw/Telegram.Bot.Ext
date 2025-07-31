@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Ext.Features.CallbackQueries;
 using Telegram.Bot.Ext.Features.Forms.Factories;
 using Telegram.Bot.Ext.Features.Messages;
 using Telegram.Bot.Ext.Features.Users;
@@ -7,17 +8,33 @@ using Telegram.Bot.Ext.Features.Users.Models;
 using Telegram.Bot.Ext.Features.Users.Providers;
 using Telegram.Bot.Ext.Features.Users.Repositories;
 
-namespace Telegram.Bot.Ext._New;
+namespace Telegram.Bot.Ext.Building;
 
 public static class ServicesCollectionExtensions
 {
     public static IServiceCollection AddTelegramBot(this IServiceCollection services, string token,
-        Func<IServiceProvider, HttpClient>? httpClientFactory = default)
+        Action<TelegramBotBuilder> buildAction)
+        => services.AddSingleton<ITelegramBot>(sp =>
+        {
+            var builder = new TelegramBotBuilder(token);
+            buildAction(builder);
+            return builder.Build(sp);
+        });
+
+    #region CallbackQueries
+
+    public static IServiceCollection AddCallbackQueries(this IServiceCollection services)
         => services
-            .AddSingleton<ITelegramBotClient>(
-                sp => new TelegramBotClient(token, httpClientFactory?.Invoke(sp)));
+            .AddSingleton<ICallbackQueryManager, CallbackQueryManager>();
+
+    #endregion
 
     #region Users
+
+    public static IServiceCollection AddTelegramUsers(this IServiceCollection services,
+        IUsersProvider usersProvider)
+        => services
+            .AddSingleton(usersProvider);
 
     public static IServiceCollection AddTelegramUsers<TUser>(this IServiceCollection services,
         Func<IServiceProvider, IUsersProvider> usersProviderFactory,

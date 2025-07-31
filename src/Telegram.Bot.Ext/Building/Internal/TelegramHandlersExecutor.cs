@@ -3,13 +3,13 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Ext.Building.Internal;
 
-internal class HandlersExecutor
+internal class TelegramHandlersExecutor
 {
-    private readonly ILogger<HandlersExecutor> _logger;
+    private readonly ILogger<TelegramHandlersExecutor> _logger;
     private readonly IReadOnlyList<ITelegramHandler> _handlers;
 
-    public HandlersExecutor(
-        ILogger<HandlersExecutor> logger,
+    public TelegramHandlersExecutor(
+        ILogger<TelegramHandlersExecutor> logger,
         IReadOnlyList<ITelegramHandler> handlers)
     {
         _logger = logger;
