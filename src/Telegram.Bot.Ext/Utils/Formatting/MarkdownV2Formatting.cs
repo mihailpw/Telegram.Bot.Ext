@@ -10,9 +10,11 @@ public class MarkdownV2Formatting : FormattingBase
         = new() { '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!' };
 
     public MarkdownV2Formatting(bool trimNewLines = true)
-        : base(ParseMode.MarkdownV2, trimNewLines)
+        : base(ParseMode, trimNewLines)
     {
     }
+
+    public static ParseMode ParseMode => ParseMode.MarkdownV2;
 
     public override IFormatting WithText(string? text, bool escape = true)
         => Do(sb => sb.Append(Escape(text, escape)));

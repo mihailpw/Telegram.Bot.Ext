@@ -14,9 +14,11 @@ public class HtmlFormatting : FormattingBase
     };
 
     public HtmlFormatting(bool trimNewLines = true)
-        : base(ParseMode.Html, trimNewLines)
+        : base(ParseMode, trimNewLines)
     {
     }
+
+    public static ParseMode ParseMode => ParseMode.Html;
 
     public override IFormatting WithText(string? text, bool escape = true)
         => Do(sb => sb.Append(Escape(text, escape)));

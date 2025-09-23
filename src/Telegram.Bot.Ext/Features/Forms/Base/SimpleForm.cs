@@ -52,8 +52,9 @@ public abstract class SimpleFormBase : IForm
     protected abstract Task<bool> ProcessResponseAsync(Update request, IFormContext ctx, CancellationToken token);
     protected abstract Task OnCompletedAsync(IFormContext ctx, CancellationToken token);
 
-    protected void CaptureMessageToRemove(Message message)
+    protected void CaptureMessageToRemove(Message? message)
     {
-        _messagesToRemove.Add(message.MessageId);
+        if (message != null)
+            _messagesToRemove.Add(message.MessageId);
     }
 }
