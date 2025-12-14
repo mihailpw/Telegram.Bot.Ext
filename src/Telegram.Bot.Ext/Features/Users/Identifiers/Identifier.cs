@@ -11,6 +11,7 @@ public abstract class Identifier
         ["chat_id"] = ChatIdIdentifier.Parse,
         ["group"] = GroupIdentifier.Parse,
         ["group_list"] = GroupListIdentifier.Parse,
+        // TODO add chat_topic_id
     };
 
     public static Identifier Parse(string input)
