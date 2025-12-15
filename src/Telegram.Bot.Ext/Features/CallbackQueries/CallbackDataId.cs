@@ -2,13 +2,13 @@ namespace Telegram.Bot.Ext.Features.CallbackQueries;
 
 public class CallbackDataId
 {
-    private readonly Guid _guid;
-    private readonly Func<Guid, string?, string> _callbackDataBuilder;
-    private readonly Func<Guid, bool> _detach;
+    private readonly string _id;
+    private readonly Func<string, string?, string> _callbackDataBuilder;
+    private readonly Func<string, bool> _detach;
 
-    internal CallbackDataId(Guid guid, Func<Guid, string?, string> callbackDataBuilder, Func<Guid, bool> detach)
+    internal CallbackDataId(string id, Func<string, string?, string> callbackDataBuilder, Func<string, bool> detach)
     {
-        _guid = guid;
+        _id = id;
         _callbackDataBuilder = callbackDataBuilder;
         _detach = detach;
     }
@@ -16,7 +16,7 @@ public class CallbackDataId
     public static implicit operator string(CallbackDataId callbackDataId) =>
         callbackDataId.Build();
 
-    public string Build(string? data = null) => _callbackDataBuilder(_guid, data);
+    public string Build(string? data = null) => _callbackDataBuilder(_id, data);
 
-    public bool Detach() => _detach(_guid);
+    public bool Detach() => _detach(_id);
 }

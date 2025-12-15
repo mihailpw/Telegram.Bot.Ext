@@ -5,7 +5,7 @@ namespace Telegram.Bot.Ext.Features.CallbackQueries;
 
 public interface ICallbackQueryManager
 {
-    CallbackDataId RegisterHandler(CallbackQueryHandler handler, Guid? id = null,
+    CallbackDataId RegisterHandler(CallbackQueryHandler handler, string? id = null,
         [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "");
 
     Task<(bool handled, bool removeMarkup)> HandleAsync(CallbackQuery callbackQuery, IHandleContext ctx,

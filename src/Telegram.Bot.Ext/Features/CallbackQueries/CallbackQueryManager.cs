@@ -10,24 +10,25 @@ public class CallbackQueryManager : ICallbackQueryManager
 
     private readonly ILogger<CallbackQueryManager> _logger;
 
-    private readonly Dictionary<Guid, (string source, CallbackQueryHandler handler)> _handlers = new();
+    private readonly Dictionary<string, (string source, CallbackQueryHandler handler)> _handlers = new();
 
     public CallbackQueryManager(ILogger<CallbackQueryManager> logger)
     {
         _logger = logger;
     }
 
-    public CallbackDataId RegisterHandler(CallbackQueryHandler handler, Guid? id = null,
+    public CallbackDataId RegisterHandler(CallbackQueryHandler handler, string? id = null,
         [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "")
     {
-        id ??= Guid.NewGuid();
-        var key = id.Value;
+        id = id == null
+            ? Guid.NewGuid().ToString("N")
+            : id.Replace(Separator, '_');
 
         var source = $"{sourceFilePath}:{memberName}";
-        _handlers.Add(key, (source, handler));
-        _logger.LogInformation("Added callback query (id={Id}; source={Source})", key.ToString("N"), source);
+        _handlers.Add(id, (source, handler));
+        _logger.LogInformation("Added callback query (id={Id}; source={Source})", id, source);
 
-        return new CallbackDataId(key, BuildCallbackData, _handlers.Remove);
+        return new CallbackDataId(id, BuildCallbackData, _handlers.Remove);
     }
 
     public async Task<(bool handled, bool removeMarkup)> HandleAsync(CallbackQuery callbackQuery, IHandleContext ctx, CancellationToken token)
@@ -48,23 +49,20 @@ public class CallbackQueryManager : ICallbackQueryManager
         return await handlingData.handler(callbackQuery, data, ctx, token);
     }
 
-    private static string BuildCallbackData(Guid id, string? data)
+    private static string BuildCallbackData(string id, string? data)
     {
-        return !string.IsNullOrWhiteSpace(data) ? $"{id:N}{Separator}{data}" : $"{id:N}";
+        return !string.IsNullOrWhiteSpace(data) ? $"{id}{Separator}{data}" : $"{id}";
     }
 
-    private static bool TryParseCallbackData(string? callbackData, out Guid id, out string? data)
+    private static bool TryParseCallbackData(string? callbackData, out string id, out string? data)
     {
-        id = Guid.Empty;
+        id = null!;
         data = null;
         if (string.IsNullOrWhiteSpace(callbackData))
             return false;
 
         var separatorInd = callbackData.IndexOf(':');
-        var idStr = separatorInd > 0 ? callbackData[..separatorInd] : callbackData;
-        if (!Guid.TryParse(idStr, out id))
-            return false;
-
+        id = separatorInd > 0 ? callbackData[..separatorInd] : callbackData;
         data = separatorInd > 0 ? callbackData[(separatorInd+1)..] : null;
         return true;
     }
