@@ -93,6 +93,8 @@ public class TelegramBotExtensionsManyChatIdsSourceGenerator : ISourceGenerator
 
         sb.Length--;
         if (Config.RunInParallel)
+#pragma warning disable CS0162 // Unreachable code detected
+            // ReSharper disable once HeuristicUnreachableCode
         {
             sb.Append($@"
                    )
@@ -104,6 +106,7 @@ public class TelegramBotExtensionsManyChatIdsSourceGenerator : ISourceGenerator
             sb.Length--;
             sb.Append(")));");
         }
+#pragma warning restore CS0162 // Unreachable code detected
         else
         {
             sb.Append(hasType

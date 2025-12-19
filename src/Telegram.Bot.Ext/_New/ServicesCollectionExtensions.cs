@@ -48,13 +48,13 @@ public static class ServicesCollectionExtensions
         Func<IServiceProvider, IMessagesRepository<TMessage>> messagesRepositoryFactory)
         where TMessage : IMessage
         => services
-            .AddSingleton<IMessageRemover, MessageRemover>()
+            .AddSingleton<IMessageRemover, InMemoryMessageRemover>()
             .AddSingleton(messagesRepositoryFactory);
 
     public static IServiceCollection AddTelegramMessagesInMemory<TMessage>(this IServiceCollection services)
         where TMessage : IMessage
         => services
-            .AddSingleton<IMessageRemover, MessageRemover>()
+            .AddSingleton<IMessageRemover, InMemoryMessageRemover>()
             .AddSingleton<IMessagesRepository<TMessage>, InMemoryMessagesRepository<TMessage>>();
 
     #endregion

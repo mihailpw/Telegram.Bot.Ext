@@ -35,7 +35,7 @@ public class FileUserRepository : IUserRepository<UserModel>
 
         public static string ToDataLine(UserModel user)
         {
-            return $"{user.Id},{user.Group:D},{user.UserName},{user.Name},{user.Created:O},{user.IsActive}";
+            return $"{user.Id},{user.Group},{user.UserName},{user.Name},{user.Created:O},{user.IsActive}";
         }
     }
 
@@ -49,7 +49,7 @@ public class FileUserRepository : IUserRepository<UserModel>
 
     public async Task<bool> AddUserAsync(UserModel user)
     {
-        using (await _semaphore.LockAsync())
+        using (await _semaphore.LockAsync(CancellationToken.None))
         {
             var allUsers = await ReadAllAsync(true).ToListAsync();
             
@@ -87,7 +87,7 @@ public class FileUserRepository : IUserRepository<UserModel>
 
     public async Task<bool> DeleteUserAsync(long id)
     {
-        using (await _semaphore.LockAsync())
+        using (await _semaphore.LockAsync(CancellationToken.None))
         {
             var allUsers = await ReadAllAsync(true).ToListAsync();
             var index = allUsers.FindIndex(u => u.Id == id);

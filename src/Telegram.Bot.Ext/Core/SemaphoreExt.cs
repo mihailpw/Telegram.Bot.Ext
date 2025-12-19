@@ -17,9 +17,9 @@ internal static class SemaphoreExt
         return new Disposable(() => target.Release());
     }
     
-    public static async Task<IDisposable> LockAsync(this SemaphoreSlim target)
+    public static async Task<IDisposable> LockAsync(this SemaphoreSlim target, CancellationToken token)
     {
-        await target.WaitAsync();
+        await target.WaitAsync(token);
         return new Disposable(() => target.Release());
     }
 }

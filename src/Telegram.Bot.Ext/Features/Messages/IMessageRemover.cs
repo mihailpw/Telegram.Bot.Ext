@@ -4,8 +4,11 @@ namespace Telegram.Bot.Ext.Features.Messages;
 
 public interface IMessageRemover
 {
-    bool CheckScheduled(ChatId chatId, int messageId, string groupKey = "");
-    bool CancelMessageRemoval(ChatId chatId, int messageId, string groupKey = "");
-    void ScheduleForRemoval(ChatId chatId, int messageId, TimeSpan deleteIn, string groupKey = "");
-    void RemoveAllImmediately(ChatId? chatId = null, int? messageId = null, string? groupKey = null);
+    Task InitializeAsync(CancellationToken token);
+    Task<bool> CheckScheduledAsync(ChatMessageId id, CancellationToken token = default);
+    Task CancelMessageRemovalAsync(ChatMessageId id, CancellationToken token = default);
+    Task ScheduleForRemovalAsync(IReadOnlyCollection<ChatMessageId> ids, TimeSpan deleteIn, string groupKey = "default",
+        CancellationToken token = default);
 }
+
+public readonly record struct ChatMessageId(ChatId ChatId, int MessageId);

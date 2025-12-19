@@ -41,7 +41,7 @@ public abstract class SimpleFormBase : IForm
         {
             var messageRemover = ctx.Bot.GetMessageRemover();
             foreach (var id in _messagesToRemove)
-                messageRemover.RemoveImmediately(ctx.ChatId, id);
+                await messageRemover.RemoveImmediately(ctx.ChatId, id, token: token);
         }
 
         return true;

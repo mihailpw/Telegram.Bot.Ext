@@ -34,7 +34,7 @@ public class LogAdminUnhandledTelegramHandler : TelegramHandlerBase
 
             var sentAdminMsgs = await ctx.Bot.SendTextMessageAsync(Group.Administrator,
                 adminText.Build(), parseMode: adminText.TelegramParseMode, cancellationToken: token);
-            ctx.Bot.GetMessageRemover().ScheduleForRemoval(sentAdminMsgs, TimeSpan.FromHours(1));
+            await ctx.Bot.GetMessageRemover().ScheduleForRemovalAsync(sentAdminMsgs, TimeSpan.FromHours(1), token: token);
         }
         else
         {
